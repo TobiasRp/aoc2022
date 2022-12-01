@@ -18,6 +18,7 @@ fn read_calories(file: &str) -> io::Result<Vec<u32>> {
             }
         }
     }
+    calories.sort();
     Ok(calories)
 }
 
@@ -45,15 +46,26 @@ mod tests {
 
     #[test]
     fn solve_test() {
-        let calories = vec![6000u32, 4000u32, 11000u32, 24000u32, 10000u32];
+        let mut calories = vec![6000u32, 4000u32, 24000u32, 10000u32, 11000u32];
+        calories.sort();
 
         assert_eq!(solve_pt1(&calories), 24000);
         assert_eq!(solve_pt2(&calories), 45000);
     }
 
     #[test]
+    fn solve_test_small() {
+        let mut calories = vec![1u32, 5u32, 10u32, 7u32, 1u32, 2u32];
+        calories.sort();
+
+        assert_eq!(solve_pt1(&calories), 10u32);
+        assert_eq!(solve_pt2(&calories), 22u32);
+    }
+
+    #[test]
     fn read_test() {
-        let calories = vec![6000u32, 4000u32, 11000u32, 24000u32, 10000u32];
+        let mut calories = vec![6000u32, 4000u32, 11000u32, 24000u32, 10000u32];
+        calories.sort();
         assert_eq!(calories, read_calories("data/day1/test").unwrap());
     }
 
