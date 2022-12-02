@@ -45,12 +45,9 @@ fn score_round(elf_shape: HandShape, my_shape: HandShape) -> i32 {
 
 fn new_shape(c: char) -> Option<HandShape> {
     match c {
-        'A' => Some(HandShape::Rock),
-        'X' => Some(HandShape::Rock),
-        'B' => Some(HandShape::Paper),
-        'Y' => Some(HandShape::Paper),
-        'C' => Some(HandShape::Scissors),
-        'Z' => Some(HandShape::Scissors),
+        'A' | 'X' => Some(HandShape::Rock),
+        'B' | 'Y' => Some(HandShape::Paper),
+        'C' | 'Z' => Some(HandShape::Scissors),
         _ => None
     }
 }
@@ -65,23 +62,6 @@ fn parse_chars(line: String) -> (char, char) {
 
     let my_char = chars.next().expect("Expected X/Y/Z char!");
     (elf_char, my_char)
-}
-
-fn solve_pt1(file: &str) -> i32 {
-    let mut total_score = 0;
-
-    let lines = read_lines(file).unwrap();
-    for rline in lines {
-        if let Ok(line) = rline {
-            let (elf_char, my_char) = parse_chars(line);
-
-            let elf_shape = new_shape(elf_char).unwrap();
-            let my_shape = new_shape(my_char).unwrap();
-
-            total_score += score_round(elf_shape, my_shape);
-        }
-    }
-    total_score
 }
 
 enum ExpectedResult {
@@ -99,12 +79,8 @@ fn expected_result(c: char) -> Option<ExpectedResult> {
     }
 }
 
-fn result_idx(result: ExpectedResult) -> usize {
-    result as usize
-}
-
 fn determine_my_shape(elf_shape: HandShape, result: ExpectedResult) -> HandShape {
-    let result_idx: usize = result_idx(result);
+    let result_idx: usize = result as usize;
     let elf_idx: usize = shape_idx(elf_shape);
 
     // row: elf
@@ -116,7 +92,23 @@ fn determine_my_shape(elf_shape: HandShape, result: ExpectedResult) -> HandShape
     my_shapes[elf_idx * 3 + result_idx]
 }
 
-fn solve_pt2(file: &str) -> i32 {
+fn score_part1(elf_char: char, my_char: char) -> i32 {
+    let elf_shape = new_shape(elf_char).unwrap();
+    let my_shape = new_shape(my_char).unwrap();
+
+    score_round(elf_shape, my_shape)
+}
+
+fn score_part2(elf_char: char, my_char: char) -> i32 {
+    let elf_shape = new_shape(elf_char).unwrap();
+
+    let result = expected_result(my_char).unwrap();
+    let my_shape = determine_my_shape(elf_shape, result);
+
+    score_round(elf_shape, my_shape)
+}
+
+fn solve<F: Fn(char, char) -> i32>(file: &str, score_fn: F) -> i32 {
     let mut total_score = 0;
 
     let lines = read_lines(file).unwrap();
@@ -124,20 +116,15 @@ fn solve_pt2(file: &str) -> i32 {
         if let Ok(line) = rline {
             let (elf_char, my_char) = parse_chars(line);
 
-            let elf_shape = new_shape(elf_char).unwrap();
-
-            let result = expected_result(my_char).unwrap();
-            let my_shape = determine_my_shape(elf_shape, result);
-
-            total_score += score_round(elf_shape, my_shape);
+            total_score += score_fn(elf_char, my_char);
         }
     }
     total_score
 }
 
 fn main() {
-    let score_pt1 = solve_pt1("data/day2/input");
-    let score_pt2 = solve_pt2("data/day2/input");
+    let score_pt1 = solve("data/day2/input", score_part1);
+    let score_pt2 = solve("data/day2/input", score_part2);
 
     println!("Total score in Pt. 1 is {}", score_pt1);
     println!("Total score in Pt. 2 is {}", score_pt2);
@@ -185,7 +172,7 @@ mod tests {
 
     #[test]
     fn test_after_completion() {
-        assert_eq!(14069, solve_pt1("data/day2/input"));
-        assert_eq!(12411, solve_pt2("data/day2/input"));
+        assert_eq!(14069, solve("data/day2/input", score_part1));
+        assert_eq!(12411, solve("data/day2/input", score_part2));
     }
 }
