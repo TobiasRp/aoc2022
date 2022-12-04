@@ -9,6 +9,15 @@ impl Range {
     fn contains(&self, r: &Range) -> bool {
         return self.start <= r.start && self.end >= r.end;
     }
+
+    fn build(substr: &str) -> Result<Range, &'static str> {
+        let mut number_it = substr.split('-');
+        let first = number_it.next().ok_or("invalid range")?;
+        let second = number_it.next().ok_or("invalid range")?;
+
+        Ok(Range {start: first.parse::<u32>().unwrap(),
+                  end: second.parse::<u32>().unwrap() })
+    }
 }
 
 fn is_contained(lhs: &Range, rhs: &Range) -> bool {
@@ -23,12 +32,10 @@ fn has_overlap(lhs: &Range, rhs: &Range) -> bool {
 fn parse_line(line: &str) -> Vec<Range> {
     let mut result = Vec::new();
 
-    for r in line.split(',') {
-        let mut number_it = r.split('-');
-        let first = number_it.next().unwrap();
-        let second = number_it.next().unwrap();
-        result.push(Range { start: first.parse::<u32>().unwrap(),
-                            end: second.parse::<u32>().unwrap() });
+    for rstr in line.split(',') {
+        let range = Range::build(rstr)
+                                 .expect("Expected valid range!");
+        result.push(range)
     }
     result
 }
