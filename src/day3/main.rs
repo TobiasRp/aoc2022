@@ -1,7 +1,7 @@
 use std::fs::File;
 use std::io::{self, BufRead};
 use std::path::Path;
-use std::collections::HashMap;
+use std::collections::HashSet;
 
 // Helper function from:
 // https://doc.rust-lang.org/rust-by-example/std_misc/file/read_lines.html
@@ -27,14 +27,14 @@ fn item_priority(item: char) -> u32 {
 }
 
 fn find_duplicated(left: &[char], right: &[char]) -> char {
-    let mut map_left = HashMap::new();
+    let mut map_left = HashSet::new();
 
     for item in left {
-        map_left.insert(item, true);
+        map_left.insert(item);
     }
 
     for item in right {
-        if map_left.contains_key(item) {
+        if map_left.contains(item) {
             return item.clone();
         }
     }
@@ -61,19 +61,19 @@ fn solve_pt1(file: &str) -> u32
 }
 
 fn find_threeway_duplicated(left: &[char], mid: &[char], right: &[char]) -> char {
-    let mut map_left = HashMap::new();
-    let mut map_mid = HashMap::new();
+    let mut map_left = HashSet::new();
+    let mut map_mid = HashSet::new();
 
     for item in left {
-        map_left.insert(item, true);
+        map_left.insert(item);
     }
 
     for item in mid {
-        map_mid.insert(item, true);
+        map_mid.insert(item);
     }
 
     for item in right {
-        if map_left.contains_key(item) && map_mid.contains_key(item) {
+        if map_left.contains(item) && map_mid.contains(item) {
             return item.clone();
         }
     }
