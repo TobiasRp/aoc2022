@@ -11,16 +11,19 @@ impl Crate {
     }
 }
 
-fn parse_num_stacks(line: &[char]) -> usize {
-    line.into_iter().filter(|c| c.is_digit(10)).count()
+fn parse_num_stacks(line: &str) -> usize {
+    line.split(' ')
+        .map(|s| s.parse::<usize>())
+        .filter(|i| i.is_ok())
+        .count()
 }
 
 fn parse_stacks(text: &str) -> Vec<Vec<Crate>> {
     let lines: Vec<&str> = text.lines().collect();
 
-    let last_line: Vec<char>  = lines.last().unwrap().chars().collect();
+    let last_line  = lines.last().unwrap();
 
-    let num_stacks = parse_num_stacks(&last_line);
+    let num_stacks = parse_num_stacks(last_line);
     let mut stacks = Vec::new();
 
     for _ in 0..num_stacks {
@@ -114,15 +117,11 @@ fn apply_moves(stacks: &mut Vec<Vec<Crate>>, text: &str, kind: MoveType) {
 }
 
 fn get_top_crates(stacks: & Vec<Vec<Crate>>) -> String {
-    let mut top_crates = String::new();
-
-    for stack in stacks {
-        let top = stack.last();
-        if let Some(top) = top {
-            top_crates.push(top.name);
-        }
-    }
-    top_crates
+    stacks
+        .iter()
+        .filter_map(|s| s.last())
+        .map(|c| c.name)
+        .collect::<String>()
 }
 
 fn split_file(file_str: &str) -> (&str, &str) {
@@ -138,7 +137,7 @@ fn solve(file: &str, kind: MoveType) -> String {
     let (stack_str, move_str) = split_file(file_str.as_str());
 
     let mut stacks = parse_stacks(stack_str);
-    
+
     apply_moves(&mut stacks, move_str, kind);
 
     get_top_crates(&stacks)
@@ -158,7 +157,7 @@ mod test {
 
     #[test]
     fn test_parse_num_stacks() {
-        let text: Vec<char> = " 1 2 3    5  6".chars().collect();
+        let text = " 1 21 42    5  60 ";
         assert_eq!(parse_num_stacks(&text), 5);
     }
 
