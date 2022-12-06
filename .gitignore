@@ -3,5 +3,6 @@ target
 
 Cargo.lock
 
+*.DS_Store
 **/.rs.bk
 
