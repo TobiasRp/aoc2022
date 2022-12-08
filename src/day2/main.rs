@@ -4,7 +4,7 @@ use aoc::read_lines;
 enum HandShape {
     Rock = 0,
     Paper = 1,
-    Scissors = 2
+    Scissors = 2,
 }
 
 fn shape_idx(shape: HandShape) -> usize {
@@ -23,9 +23,7 @@ fn score_round(elf_shape: HandShape, my_shape: HandShape) -> i32 {
     // win/draw/lose scores for all combinatios of elf and my shapes
     // row: elf
     // col: my shape
-    let scores = [3, 6, 0,
-                            0, 3, 6,
-                            6, 0, 3];
+    let scores = [3, 6, 0, 0, 3, 6, 6, 0, 3];
 
     my_score + scores[elf_idx * 3 + my_idx]
 }
@@ -35,7 +33,7 @@ fn new_shape(c: char) -> Option<HandShape> {
         'A' | 'X' => Some(HandShape::Rock),
         'B' | 'Y' => Some(HandShape::Paper),
         'C' | 'Z' => Some(HandShape::Scissors),
-        _ => None
+        _ => None,
     }
 }
 
@@ -54,7 +52,7 @@ fn parse_chars(line: String) -> (char, char) {
 enum ExpectedResult {
     Lose = 0,
     Draw = 1,
-    Win = 2
+    Win = 2,
 }
 
 fn expected_result(c: char) -> Option<ExpectedResult> {
@@ -62,7 +60,7 @@ fn expected_result(c: char) -> Option<ExpectedResult> {
         'X' => Some(ExpectedResult::Lose),
         'Y' => Some(ExpectedResult::Draw),
         'Z' => Some(ExpectedResult::Win),
-        _ => None
+        _ => None,
     }
 }
 
@@ -72,9 +70,17 @@ fn determine_my_shape(elf_shape: HandShape, result: ExpectedResult) -> HandShape
 
     // row: elf
     // col: expected result
-    let my_shapes = [HandShape::Scissors, HandShape::Rock, HandShape::Paper,
-                                     HandShape::Rock, HandShape::Paper, HandShape::Scissors,
-                                     HandShape::Paper, HandShape::Scissors, HandShape::Rock];
+    let my_shapes = [
+        HandShape::Scissors,
+        HandShape::Rock,
+        HandShape::Paper,
+        HandShape::Rock,
+        HandShape::Paper,
+        HandShape::Scissors,
+        HandShape::Paper,
+        HandShape::Scissors,
+        HandShape::Rock,
+    ];
 
     my_shapes[elf_idx * 3 + result_idx]
 }
@@ -142,19 +148,46 @@ mod tests {
     #[test]
     fn test_results() {
         // lose
-        assert_eq!(HandShape::Rock, determine_my_shape(HandShape::Paper, ExpectedResult::Lose));
-        assert_eq!(HandShape::Paper, determine_my_shape(HandShape::Scissors, ExpectedResult::Lose));
-        assert_eq!(HandShape::Scissors, determine_my_shape(HandShape::Rock, ExpectedResult::Lose));
+        assert_eq!(
+            HandShape::Rock,
+            determine_my_shape(HandShape::Paper, ExpectedResult::Lose)
+        );
+        assert_eq!(
+            HandShape::Paper,
+            determine_my_shape(HandShape::Scissors, ExpectedResult::Lose)
+        );
+        assert_eq!(
+            HandShape::Scissors,
+            determine_my_shape(HandShape::Rock, ExpectedResult::Lose)
+        );
 
         // draw
-        assert_eq!(HandShape::Paper, determine_my_shape(HandShape::Paper, ExpectedResult::Draw));
-        assert_eq!(HandShape::Scissors, determine_my_shape(HandShape::Scissors, ExpectedResult::Draw));
-        assert_eq!(HandShape::Rock, determine_my_shape(HandShape::Rock, ExpectedResult::Draw));
+        assert_eq!(
+            HandShape::Paper,
+            determine_my_shape(HandShape::Paper, ExpectedResult::Draw)
+        );
+        assert_eq!(
+            HandShape::Scissors,
+            determine_my_shape(HandShape::Scissors, ExpectedResult::Draw)
+        );
+        assert_eq!(
+            HandShape::Rock,
+            determine_my_shape(HandShape::Rock, ExpectedResult::Draw)
+        );
 
         // win
-        assert_eq!(HandShape::Scissors, determine_my_shape(HandShape::Paper, ExpectedResult::Win));
-        assert_eq!(HandShape::Rock, determine_my_shape(HandShape::Scissors, ExpectedResult::Win));
-        assert_eq!(HandShape::Paper, determine_my_shape(HandShape::Rock, ExpectedResult::Win));
+        assert_eq!(
+            HandShape::Scissors,
+            determine_my_shape(HandShape::Paper, ExpectedResult::Win)
+        );
+        assert_eq!(
+            HandShape::Rock,
+            determine_my_shape(HandShape::Scissors, ExpectedResult::Win)
+        );
+        assert_eq!(
+            HandShape::Paper,
+            determine_my_shape(HandShape::Rock, ExpectedResult::Win)
+        );
     }
 
     #[test]

@@ -2,7 +2,7 @@ use std::fs;
 
 #[derive(Clone, Copy, Debug)]
 struct Crate {
-    name: char
+    name: char,
 }
 
 impl Crate {
@@ -21,7 +21,7 @@ fn parse_num_stacks(line: &str) -> usize {
 fn parse_stacks(text: &str) -> Vec<Vec<Crate>> {
     let lines: Vec<&str> = text.lines().collect();
 
-    let last_line  = lines.last().unwrap();
+    let last_line = lines.last().unwrap();
 
     let num_stacks = parse_num_stacks(last_line);
     let mut stacks = Vec::new();
@@ -35,7 +35,7 @@ fn parse_stacks(text: &str) -> Vec<Vec<Crate>> {
 
         for i in 0..num_stacks {
             let start_idx = i * 4;
-            let end_idx = (i+1) * 4 - 1;
+            let end_idx = (i + 1) * 4 - 1;
 
             if end_idx <= chars.len() && chars[start_idx] == '[' {
                 stacks[i].insert(0, Crate::build(&chars[start_idx..end_idx]));
@@ -49,14 +49,14 @@ fn parse_stacks(text: &str) -> Vec<Vec<Crate>> {
 #[derive(Clone, Copy)]
 enum MoveType {
     Pt1,
-    Pt2
+    Pt2,
 }
 
 struct Move {
     src: usize,
     dst: usize,
     num: usize,
-    kind: MoveType
+    kind: MoveType,
 }
 
 impl Move {
@@ -71,7 +71,12 @@ impl Move {
 
         // assumes that the index is one and not zero-based
         // so subtract one for src and dst
-        Move{src: src - 1, dst: dst - 1, num: num, kind: kind}
+        Move {
+            src: src - 1,
+            dst: dst - 1,
+            num: num,
+            kind: kind,
+        }
     }
 
     fn apply_pt1(&self, stacks: &mut Vec<Vec<Crate>>) {
@@ -82,7 +87,7 @@ impl Move {
             }
         }
     }
-    
+
     fn apply_pt2(&self, stacks: &mut Vec<Vec<Crate>>) {
         let mut temp: Vec<Crate> = Vec::new();
         for _ in 0..self.num {
@@ -116,7 +121,7 @@ fn apply_moves(stacks: &mut Vec<Vec<Crate>>, text: &str, kind: MoveType) {
     }
 }
 
-fn get_top_crates(stacks: & Vec<Vec<Crate>>) -> String {
+fn get_top_crates(stacks: &Vec<Vec<Crate>>) -> String {
     stacks
         .iter()
         .filter_map(|s| s.last())
@@ -132,8 +137,7 @@ fn split_file(file_str: &str) -> (&str, &str) {
 }
 
 fn solve(file: &str, kind: MoveType) -> String {
-    let file_str = fs::read_to_string(file)
-                                .expect("Unable to read file");
+    let file_str = fs::read_to_string(file).expect("Unable to read file");
     let (stack_str, move_str) = split_file(file_str.as_str());
 
     let mut stacks = parse_stacks(stack_str);
@@ -171,13 +175,14 @@ mod test {
         assert_eq!(stacks[1].len(), 2);
         assert_eq!(stacks[2].len(), 1);
     }
-    
+
     fn create_test_data() -> (String, Vec<Vec<Crate>>) {
         let mut stacks = Vec::new();
-        stacks.push(vec![Crate{name: 'A'}, Crate{name: 'B'}]);
-        stacks.push(vec![Crate{name: 'X'}]);
+        stacks.push(vec![Crate { name: 'A' }, Crate { name: 'B' }]);
+        stacks.push(vec![Crate { name: 'X' }]);
 
-        let move_text = String::from("move 1 from 2 to 1\nmove 3 from 1 to 2\nmove 1 from 2 to 1\n");
+        let move_text =
+            String::from("move 1 from 2 to 1\nmove 3 from 1 to 2\nmove 1 from 2 to 1\n");
         (move_text, stacks)
     }
 
@@ -208,8 +213,7 @@ mod test {
 
     #[test]
     fn test_day5() {
-        let file_str = fs::read_to_string("data/day5/test")
-                                .expect("Unable to read file");
+        let file_str = fs::read_to_string("data/day5/test").expect("Unable to read file");
         let (stack_str, move_str) = split_file(file_str.as_str());
         assert!(!stack_str.contains("move"));
         assert!(!move_str.contains("Z"));
@@ -223,7 +227,7 @@ mod test {
         let move_lines = move_str.lines().collect::<Vec<&str>>();
         assert_eq!(move_lines.len(), 4);
 
-        apply_moves(&mut stacks, &move_lines[0], MoveType::Pt1);        
+        apply_moves(&mut stacks, &move_lines[0], MoveType::Pt1);
         apply_moves(&mut stacks, &move_lines[1], MoveType::Pt1);
         apply_moves(&mut stacks, &move_lines[2], MoveType::Pt1);
         apply_moves(&mut stacks, &move_lines[3], MoveType::Pt1);

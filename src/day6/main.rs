@@ -23,8 +23,7 @@ fn solve_day6(stream: &Vec<char>, window_size: usize) -> usize {
 }
 
 fn main() {
-    let file_str = fs::read_to_string("data/day6/input")
-                                .expect("Unable to read file");
+    let file_str = fs::read_to_string("data/day6/input").expect("Unable to read file");
     let stream = file_str.chars().collect::<Vec<char>>();
 
     let solution_pt1 = solve_day6(&stream, 4);

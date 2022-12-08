@@ -2,7 +2,7 @@ use aoc::read_lines;
 
 struct Range {
     start: u32,
-    end: u32
+    end: u32,
 }
 
 impl Range {
@@ -15,8 +15,10 @@ impl Range {
         let first = number_it.next().ok_or("invalid range")?;
         let second = number_it.next().ok_or("invalid range")?;
 
-        Ok(Range {start: first.parse::<u32>().unwrap(),
-                  end: second.parse::<u32>().unwrap() })
+        Ok(Range {
+            start: first.parse::<u32>().unwrap(),
+            end: second.parse::<u32>().unwrap(),
+        })
     }
 }
 
@@ -26,15 +28,14 @@ fn is_contained(lhs: &Range, rhs: &Range) -> bool {
 
 fn has_overlap(lhs: &Range, rhs: &Range) -> bool {
     return (lhs.start >= rhs.start && lhs.start <= rhs.end)
-    || (rhs.start >= lhs.start && rhs.start <= lhs.end);
+        || (rhs.start >= lhs.start && rhs.start <= lhs.end);
 }
 
 fn parse_line(line: &str) -> Vec<Range> {
     let mut result = Vec::new();
 
     for rstr in line.split(',') {
-        let range = Range::build(rstr)
-                                 .expect("Expected valid range!");
+        let range = Range::build(rstr).expect("Expected valid range!");
         result.push(range)
     }
     result
@@ -42,7 +43,7 @@ fn parse_line(line: &str) -> Vec<Range> {
 
 fn solve<F>(file: &str, decision_fn: F) -> u32
 where
-    F: Fn(&Range, &Range) -> bool
+    F: Fn(&Range, &Range) -> bool,
 {
     let mut total_score = 0;
 
@@ -52,7 +53,11 @@ where
             let ranges = parse_line(line.as_str());
             assert_eq!(ranges.len(), 2);
 
-            total_score += if decision_fn(&ranges[0], &ranges[1]) { 1} else { 0 };
+            total_score += if decision_fn(&ranges[0], &ranges[1]) {
+                1
+            } else {
+                0
+            };
         }
     }
     total_score
@@ -69,21 +74,21 @@ fn main() {
 #[cfg(test)]
 mod tests_day4 {
     use super::*;
-    
+
     #[test]
     fn test_contains_other() {
-        let r1 = Range { start: 2, end: 4};
-        let r2 = Range { start: 2, end: 8};
-        let r3 = Range { start: 5, end: 8};
+        let r1 = Range { start: 2, end: 4 };
+        let r2 = Range { start: 2, end: 8 };
+        let r3 = Range { start: 5, end: 8 };
         assert!(is_contained(&r1, &r2));
         assert!(!is_contained(&r1, &r3));
     }
 
     #[test]
     fn test_has_overlap() {
-        let r1 = Range { start: 2, end: 4};
-        let r2 = Range { start: 3, end: 8};
-        let r3 = Range { start: 5, end: 8};
+        let r1 = Range { start: 2, end: 4 };
+        let r2 = Range { start: 3, end: 8 };
+        let r3 = Range { start: 5, end: 8 };
         assert!(has_overlap(&r1, &r2));
         assert!(!has_overlap(&r1, &r3));
     }
@@ -109,5 +114,4 @@ mod tests_day4 {
         assert_eq!(solve("data/day4/test", is_contained), 2);
         assert_eq!(solve("data/day4/test", has_overlap), 4);
     }
-
 }

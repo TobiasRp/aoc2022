@@ -29,8 +29,7 @@ fn find_duplicated(left: &[char], right: &[char]) -> char {
     panic!("No key found that exists in both sides!");
 }
 
-fn solve_pt1(file: &str) -> u32
-{
+fn solve_pt1(file: &str) -> u32 {
     let mut total_sum = 0;
 
     let lines = read_lines(file).unwrap();
@@ -38,7 +37,6 @@ fn solve_pt1(file: &str) -> u32
         if let Ok(line) = rline {
             let all_chars: Vec<char> = line.chars().collect();
             assert!(all_chars.len() % 2 == 0);
-
 
             let (head, tail) = all_chars.split_at(all_chars.len() / 2);
             let item = find_duplicated(head, tail);
@@ -69,8 +67,7 @@ fn find_threeway_duplicated(left: &[char], mid: &[char], right: &[char]) -> char
     panic!("No key found that exists in all three!");
 }
 
-fn solve_pt2(file: &str) -> u32
-{
+fn solve_pt2(file: &str) -> u32 {
     let mut total_sum = 0;
 
     let lines: Vec<String> = read_lines(file).unwrap().collect::<Result<_, _>>().unwrap();
